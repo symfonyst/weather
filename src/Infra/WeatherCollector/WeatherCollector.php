@@ -4,27 +4,29 @@ declare(strict_types=1);
 
 namespace App\Infra\WeatherCollector;
 
+use App\Infra\Services\Validators\WeatherValidator;
 use Exception;
 use Throwable;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\BadResponseException;
 
 class WeatherCollector
 {
     private ClientInterface $client;
     private RequestFactory $requestFactory;
+    private WeatherValidator $validator;
 
     public function __construct(
         ClientInterface $client,
-        RequestFactory $requestFactory
+        RequestFactory $requestFactory,
+        WeatherValidator $validator
     ) {
         $this->client = $client;
         $this->requestFactory = $requestFactory;
+        $this->validator = $validator;
     }
 
     /**
-     * @throws Throwable
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws Exception
      */
     public function collect(string $town): array
     {
@@ -45,8 +47,12 @@ class WeatherCollector
      */
     private function validate($data): void
     {
-        if (!is_array($data)) {
-            throw new Exception('Неверный формат ответа');
+        $errors = $this->validator->validate($data);
+
+        if (!empty($errors)) {
+            throw new Exception(sprintf(
+                'Неверный формат ответа. Ошибка: %s', implode(', ', $errors)
+            ));
         }
     }
 }
