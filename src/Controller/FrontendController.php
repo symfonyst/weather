@@ -29,8 +29,7 @@ class FrontendController
     public function main(): Response
     {
         $info = $this->weatherHandler->handle();
-        print_r($info);die;
-        $contents = $this->twig->render('frontend/main.html.twig', []);
+        $contents = $this->twig->render('frontend/main.html.twig', ['info' => $info]);
 
         return new Response($contents);
     }

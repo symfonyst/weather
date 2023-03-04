@@ -4,4 +4,11 @@
 
 {% block body %}
     <p>main page</p>
+
+    {% if info is not null %}
+        <div class="">
+            Температура: {{ info.temp }}
+        </div>
+    {% endif %}
+
 {% endblock %}
