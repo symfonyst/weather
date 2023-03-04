@@ -39,8 +39,13 @@ class WeatherValidator
             new Collection([
                 'fields' => [
                     'name' => new NotBlank(),
-                    'weather' => new Collection([
-                        'fields' => [],
+                    'main' => new Collection([
+                        'fields' => [
+                            'temp' => new NotBlank(),
+                            'feels_like' => new NotBlank(),
+                            'temp_min' => new NotBlank(),
+                            'temp_max' => new NotBlank()
+                        ],
                         'allowExtraFields' => true,
                         'allowMissingFields' => false
                     ])

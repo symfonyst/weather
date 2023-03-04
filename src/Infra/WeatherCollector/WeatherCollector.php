@@ -4,31 +4,37 @@ declare(strict_types=1);
 
 namespace App\Infra\WeatherCollector;
 
-use App\Infra\Services\Validators\WeatherValidator;
+use App\Dto\Weather\WeatherDto;
+use App\Infra\Services\Serializer\SerializerFactory;
 use Exception;
-use Throwable;
 use GuzzleHttp\ClientInterface;
+use App\Dto\Weather\ResponseDto;
+use App\Infra\Services\Validators\WeatherValidator;
+use Symfony\Component\Serializer\Serializer;
 
 class WeatherCollector
 {
     private ClientInterface $client;
     private RequestFactory $requestFactory;
     private WeatherValidator $validator;
+    private Serializer $serializer;
 
     public function __construct(
         ClientInterface $client,
         RequestFactory $requestFactory,
-        WeatherValidator $validator
+        WeatherValidator $validator,
+        SerializerFactory $serializerFactory
     ) {
         $this->client = $client;
         $this->requestFactory = $requestFactory;
         $this->validator = $validator;
+        $this->serializer = $serializerFactory->create();
     }
 
     /**
      * @throws Exception
      */
-    public function collect(string $town): array
+    public function collect(string $town): WeatherDto
     {
         $url = sprintf('weather?units=metric&lang=ru&q=%s', $town);
 
@@ -39,7 +45,7 @@ class WeatherCollector
         $data = json_decode($json, true);
         $this->validate($data);
 
-        return $data;
+        return $this->serializer->denormalize($data['main'], WeatherDto::class);
     }
 
     /**
