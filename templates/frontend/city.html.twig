@@ -1,0 +1,15 @@
+{% extends "/base.html.twig" %}
+
+{% block title %}Погода в городе {{ info.name }}{% endblock %}
+
+{% block body %}
+    <div class="">
+        <a href="/">На главную</a>
+    </div>
+    <h2>Погода в городе {{ info.name }}</h2>
+    {% if info is not null %}
+        <div class="">
+            Температура: {{ info.main.temp }}
+        </div>
+    {% endif %}
+{% endblock %}

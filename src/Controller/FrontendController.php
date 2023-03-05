@@ -28,9 +28,17 @@ class FrontendController
     #[Route('/')]
     public function main(): Response
     {
-        $info = $this->weatherHandler->handle();
-        $contents = $this->twig->render('frontend/main.html.twig', ['info' => $info]);
+        $contents = $this->twig->render('frontend/main.html.twig');
 
         return new Response($contents);
+    }
+
+    #[Route('/weather/{city}')]
+    public function weatherByCity(string $city): Response
+    {
+        $info = $this->weatherHandler->handle($city);
+        $content = $this->twig->render('frontend/city.html.twig', ['info' => $info]);
+
+        return new Response($content);
     }
 }

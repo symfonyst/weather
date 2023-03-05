@@ -3,12 +3,11 @@
 {% block title %}Главная страница{% endblock %}
 
 {% block body %}
-    <p>main page</p>
-
-    {% if info is not null %}
-        <div class="">
-            Температура: {{ info.temp }}
-        </div>
-    {% endif %}
-
+    <h1>Погода</h1>
+    <div class="">
+        <ul>
+            <li><a href="/weather/moscow">Москва</a></li>
+            <li><a href="/weather/sochi">Сочи</a></li>
+        </ul>
+    </div>
 {% endblock %}

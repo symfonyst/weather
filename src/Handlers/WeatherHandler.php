@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Handlers;
 
 use Throwable;
-use App\Dto\Weather\WeatherDto;
+use App\Dto\Weather\ResultDto;
 use App\Infra\WeatherCollector\WeatherCollector;
 
 class WeatherHandler
@@ -17,15 +17,28 @@ class WeatherHandler
         $this->weatherCollector = $weatherCollector;
     }
 
-    public function handle(): ?WeatherDto
+    public function handle(string $city): ?ResultDto
     {
         try {
-            return $this->weatherCollector->collect('moscow');
+            $city = $this->sanitize($city);
+
+            if ($city === '') {
+                return null;
+            }
+
+            return $this->weatherCollector->collect($city);
         } catch (Throwable $exception) {
             echo $exception->getMessage();
 
             return null;
         }
 
+    }
+
+    private function sanitize(string $city): string
+    {
+        $res = trim($city);
+
+        return preg_replace('/[\W\d_]/', '', $res);
     }
 }
